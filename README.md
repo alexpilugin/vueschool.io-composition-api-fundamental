@@ -10,3 +10,6 @@ Links:
 - [Vue SFC Playground](https://sfc.vuejs.org/)
 - [VueUse: Collection of Vue Composition Utilities](https://vueuse.org)
 
+### Screenshots
+
+![Screenshots](https://github.com/alexpilugin/vueschool.io-composition-api-fundamental/raw/main/shopping-list-app-screenshot.png "Screenshot Standalone Vue 3 App")
