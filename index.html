@@ -1,0 +1,125 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 3 standalone</title>
+    <script src="https://unpkg.com/vue@3.0.2"></script>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <div class="header">
+        <h1>{{ header }}</h1>
+        <button v-if="editing" class="btn" @click="doEdit(false)">
+          Cancel
+        </button>
+        <button v-else class="btn btn-primary" @click="doEdit(true)">
+          Add Item
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form class="add-item-form" v-if="editing" @submit.prevent="saveItem">
+        <input v-model.trim="newItem" type="text" placeholder="Add an item" />
+        <label>
+          <input type="checkbox" v-model="newItemHighPriority" />
+          High Priority
+        </label>
+        <button class="btn btn-primary" :disabled="newItem.length === 0">
+          Save Item
+        </button>
+      </form>
+      <p v-if="characterCount" class="counter">{{ characterCount }}/200</p>
+      <hr />
+
+      <!-- List -->
+      <ul>
+        <li
+          v-for="(item, index) in reversedItems"
+          :key="id"
+          @click="toggelPurchased(item)"
+          class="static-class"
+          :class="{strikeout: item.purchased, priority: item.highPriority}"
+        >
+          {{item.label}}
+        </li>
+      </ul>
+      <p v-if="!items.length">Nothing to see here</p>
+    </div>
+
+    <script>
+      const { createApp, ref, computed } = Vue;
+      const App = {
+        setup() {
+          const items = ref([
+            /*
+            {
+              id: 1,
+              label: "10 party hats",
+              highPriority: false,
+              purchased: true,
+            },
+            {
+              id: 2,
+              label: "2 board games",
+              highPriority: false,
+              purchased: true,
+            },
+            { id: 3, label: "20 cups", highPriority: true, purchased: false },
+            */
+          ]);
+
+          const header = ref("Shopping List App");
+          const editing = ref(false);
+
+          const newItem = ref("");
+          const newItemHighPriority = ref(false);
+
+          const saveItem = () => {
+            items.value.push({
+              id: items.value.length + 1,
+              label: newItem.value,
+              highPriority: newItemHighPriority.value,
+            });
+            newItem.value = "";
+            newItemHighPriority.value = false;
+          };
+          const doEdit = (e) => {
+            editing.value = e;
+            newItem.value = "";
+            newItemHighPriority.value = false;
+          };
+          const toggelPurchased = (item) => {
+            item.purchased = !item.purchased;
+          };
+
+          // computed property (function)
+          const characterCount = computed(() => {
+            return newItem.value.length;
+          });
+
+          // computed property: last item first
+          const reversedItems = computed(() => [...items.value].reverse());
+
+          return {
+            items,
+            header,
+            editing,
+            newItem,
+            newItemHighPriority,
+            characterCount, // computed property
+            reversedItems, // computed property
+            saveItem,
+            doEdit,
+            toggelPurchased,
+          };
+        },
+      };
+
+      const app = createApp(App);
+      app.mount("#app");
+    </script>
+  </body>
+</html>
